@@ -1,9 +1,8 @@
 html{
-    height: auto;
-    min-width: 600px;
+    min-height: 100vh;
     background-image: linear-gradient(130deg, #121212,lightgray);
     background-repeat: no-repeat;
-    background-size: auto;
+    background-size: cover;
     /* not as bright */
     /* color: lightgray; */
     /* makes our background esier on the eyes */
