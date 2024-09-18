@@ -1,59 +1,112 @@
-// selectors
+/*
+    i made this far to complicated then it had to be. so much stress,
+    google might ask for some money after how much i'v used it...
+*/
 
-document.querySelector("form").addEventListener("submit", handleSubmitForm)
-document.querySelector("ul").addEventListener("click", handleClickDeleteOrCheck)
-document.getElementById("clear")
 
-// event handlers
-function handleSubmitForm(e){
-    // förklara
+// create our variable
+const form = document.querySelector("#task-form");
+const taskBtn= document.querySelector("#newTask")
+const clear = document.querySelector("#clear");
+let tasks = [];
+
+form.addEventListener("submit", (e)=>{
     e.preventDefault();
-    let input = document.querySelector("input");
-    // if input.value is not equal to empty
-    if(input.value != "")
-        addTodo(input.value);
-    // empty the field after entering todotask
-    input.value = "";
+    addTask();
+})
+
+// clear our list
+clear.addEventListener("click",(e)=>{
+    tasks = []
+    updateTasks()
+})
+
+
+
+function addTask() {
+    const input = document.querySelector("#taskInput")
+    const inputText = input.value.trim()
+    
+    if(inputText){
+        
+        // create task object
+        const task ={
+            // Date gives us our id
+            id: Date.now(),
+            text:inputText,
+            completed: false
+        };
+
+        // add task to array
+        tasks.push(task);
+
+        // updates tasks
+        updateTasks();
+
+        // clear input
+        input.value="";
+    }
 }
 
-function handleClickDeleteOrCheck(e){
-    // checks whats the name of the element we are clicking
-    if (e.target.name == "checkButton")
-        checkTodo(e);
-    if (e.target.name == "deleteButton")
-        deleteTodo(e)
+function updateTasks() {
+    const list = document.querySelector("ul")
+    // clear
+    list.innerHTML ="";
+
+
+    tasks.forEach(task =>{
+        const li = document.createElement("li");
+
+        // checkbox
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.completed;
+        checkbox.onchange = () => toggleTaskComplete(task.id);
+
+        // delete button
+        const deleteButton = document.createElement('button')
+        deleteButton.textContent = "Delete";
+        deleteButton.onclick = () => deleteTask(task.id);
+
+        // line-through text if complete
+        const span = document.createElement("span");
+        span.textContent = task.text;
+        if(task.completed){
+            span.style.textDecoration = "line-through";
+        }
+
+        li.appendChild(checkbox);
+        li.appendChild(span);
+        li.appendChild(deleteButton);
+        list.appendChild(li);
+    });
+    // update task counter
+    updateTaskCounter();
+}
+
+function toggleTaskComplete(id) {
+    tasks = tasks.map(task => {
+        if (task.id === id){
+            task.completed = !task.completed; //changes the completed status
+        }
+        return task;
+    });
+    updateTasks();
 }
 
 
-
-// helpers
-function addTodo(todo){
-    let ul = document.querySelector("ul");
-    // creats an "li" element
-    let li = document.createElement("li");
-
-    li.innerHTML = `
-        <span class="todo-item">${todo}</span>
-        <button name="checkButton"><i class="fas fa-check-square"></i></button>
-        <button name="deleteButton"><i class="fas fa-trash"></i></button>
-    `;
-    // adds class to the li element
-    li.classList.add("todo-list-item");
-    ul.appendChild(li);
+function deleteTask(id) {
+    tasks = tasks.filter(task => task.id !== id);
+    updateTasks();
 }
 
-function checkTodo(e){
-    let item = e.target.parentNode;
-    if (item.style.textDecoration == "line-through")
-        item.style.textDecoration = "none";
-    else
-        item.style.textDecoration = "line-through";
+// update task counter
+function updateTaskCounter(){
+    const totalTasks = tasks.length;
+    const completedTasks = tasks.filter(task => task.completed).length;
+
+    const taskCounter = document.querySelector("#numbers");
+    taskCounter.textContent = `${completedTasks}/${totalTasks}`;
 }
 
-function deleteTodo(e){
-    let item = e.target.parentNode;
-    item.addEventListener("transitionend", function (){
-        item.remove();
-    })
-    item.classList.add("todo-list-item-fall");
-}
+
