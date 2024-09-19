@@ -6,17 +6,18 @@
 
 // create our variable
 const form = document.querySelector("#task-form");
-const taskBtn= document.querySelector("#newTask")
+const taskBtn = document.querySelector("#newTask")
 const clear = document.querySelector("#clear");
+const empty = document.querySelector("#empty");
 let tasks = [];
 
-form.addEventListener("submit", (e)=>{
+form.addEventListener("submit", (e) => {
     e.preventDefault();
     addTask();
 })
 
 // clear our list
-clear.addEventListener("click",(e)=>{
+clear.addEventListener("click", (e) => {
     tasks = []
     updateTasks()
 })
@@ -26,35 +27,41 @@ clear.addEventListener("click",(e)=>{
 function addTask() {
     const input = document.querySelector("#taskInput")
     const inputText = input.value.trim()
-    
-    if(inputText){
-        
-        // create task object
-        const task ={
-            // Date gives us our id
-            id: Date.now(),
-            text:inputText,
-            completed: false
-        };
+    // checks if inputText is not an empty string
+    if (inputText != "") {
+        empty.innerHTML=""
+        if (inputText) {
 
-        // add task to array
-        tasks.push(task);
+            // create task object
+            const task = {
+                // Date gives us our id
+                id: Date.now(),
+                text: inputText,
+                completed: false
+            };
 
-        // updates tasks
-        updateTasks();
+            // add task to array
+            tasks.push(task);
 
-        // clear input
-        input.value="";
+            // updates tasks
+            updateTasks();
+
+            // clear input
+            input.value = "";
+        }
+    }else{
+        empty.innerHTML="Please write something"
     }
 }
+
 
 function updateTasks() {
     const list = document.querySelector("ul")
     // clear
-    list.innerHTML ="";
+    list.innerHTML = "";
 
 
-    tasks.forEach(task =>{
+    tasks.forEach(task => {
         const li = document.createElement("li");
 
         // checkbox
@@ -71,7 +78,7 @@ function updateTasks() {
         // line-through text if complete
         const span = document.createElement("span");
         span.textContent = task.text;
-        if(task.completed){
+        if (task.completed) {
             span.style.textDecoration = "line-through";
         }
 
@@ -86,7 +93,7 @@ function updateTasks() {
 
 function toggleTaskComplete(id) {
     tasks = tasks.map(task => {
-        if (task.id === id){
+        if (task.id === id) {
             task.completed = !task.completed; //changes the completed status
         }
         return task;
@@ -101,12 +108,10 @@ function deleteTask(id) {
 }
 
 // update task counter
-function updateTaskCounter(){
+function updateTaskCounter() {
     const totalTasks = tasks.length;
     const completedTasks = tasks.filter(task => task.completed).length;
 
     const taskCounter = document.querySelector("#numbers");
     taskCounter.textContent = `${completedTasks}/${totalTasks}`;
 }
-
-

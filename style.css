@@ -18,6 +18,11 @@ html{
     
 }
 
+p{
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
 #numbers{
     width: 100px;
     height: 100px;
