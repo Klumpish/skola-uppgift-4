@@ -72,7 +72,7 @@ function updateTasks() {
 
         // delete button
         const deleteButton = document.createElement('button')
-        deleteButton.textContent = "Delete";
+        deleteButton.innerHTML = `<i class="fa-solid fa-trash-can"></i>`;
         deleteButton.onclick = () => deleteTask(task.id);
 
         // line-through text if complete
